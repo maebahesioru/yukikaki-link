@@ -1,11 +1,12 @@
 /* Yukikaki Link — service worker (offline app shell)
    ゆきかきリンク: オフラインでも動くように、アプリの殻をキャッシュします。 */
-var CACHE = 'ykl-v1';
+var CACHE = 'ykl-v2';
 var ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icons/icon.svg'
+  './icons/icon.svg',
+  './assets/qr-invite.png'
 ];
 
 self.addEventListener('install', function (e) {

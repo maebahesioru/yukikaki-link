@@ -187,6 +187,8 @@ ruby rt { font-size: .55em; color: var(--ink-soft); }
 
 canvas { max-width: 100%; display: block; margin: 0 auto; }
 .map-hint { text-align: center; font-size: .92em; font-weight: 700; color: #3f5670; margin: .5em 0; }
+/* ============ Invite QR ============ */
+#qr-invite { width: 200px; max-width: 65%; display: block; margin: .6em auto 0; border-radius: 8px; }
 </style>
 </head>
 <body>
@@ -218,6 +220,12 @@ canvas { max-width: 100%; display: block; margin: 0 auto; }
       <div class="card">
         <h2 style="margin-top:0">🍊 みかんの ひとこと</h2>
         <p class="muted">毛糸のぼうしをかぶった「みかん」が、この町の 助け合いを 見守っています。みんなの「ありがとう」が ふえると、みかんも おおきくなります。</p>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-top:0">📷 おとなりさんを さそう</h2>
+        <p class="muted">この アプリを つかいたい 人に、QRコードを 見せてあげてください。おなじ アプリが ひらきます。</p>
+        <img id="qr-invite" src="assets/qr-invite.png" alt="ゆきかきリンクのQRコード（おとなりさん用）">
       </div>
     </section>
 
