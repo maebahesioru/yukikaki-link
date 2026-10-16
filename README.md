@@ -6,6 +6,8 @@
 Built for **[Neighborhood Hacks 2026](https://neighborhood-hacks-2026.devpost.com/)** — Track 04: Safety & Emergency Response (tracks are inspiration-only).
 開発期間: 2026-10-16 〜 2026-10-23 (ハッキング期間内に全コード新規作成)
 
+**▶ Live app: https://maebahesioru.github.io/yukikaki-link/** （GitHub Pages / PWA・オフライン対応）
+
 ---
 
 ## The problem (Why)
@@ -43,7 +45,14 @@ Built for **[Neighborhood Hacks 2026](https://neighborhood-hacks-2026.devpost.co
 
 ## Status
 
-🚧 **Under active development** — 2026-10-16 開始。骨組み→動く最小版→機能拡充→E2Eテスト→デモ動画→提出。
+✅ **MVP deployed** — 2026-10-16。GitHub Pages公開済み・E2E 35チェック green（ローカル+本番URL）。
+進行状況の詳細は [STATUS.md](STATUS.md) を参照。
+
+## Evidence & docs
+
+- [docs/evidence-kit.md](docs/evidence-kit.md) — 「問題は本物か?」に答える公開統計（出典URL付き）
+- [assets/invite-card.png](assets/invite-card.png) — 印刷できる招待カード（QRコード付き）
+- アプリ内ホーム画面にも「おとなりさんを さそう」QRカードを表示
 
 ## Run locally
 
@@ -52,6 +61,16 @@ Built for **[Neighborhood Hacks 2026](https://neighborhood-hacks-2026.devpost.co
 python3 -m http.server 8080
 # → http://localhost:8080
 ```
+
+## Tests
+
+```bash
+node tests/smoke.cjs        # ローカル（静的サーバー内蔵・Playwright使用）
+BASE_URL=https://maebahesioru.github.io/yukikaki-link/ node tests/smoke.cjs   # 本番URLを検証
+```
+
+35チェック: 依頼(3タップ)→ボード→完了→ありがとう→町カウンター→大型文字→永続化→
+Service Worker→**オフライン再読込**→QR表示→マニフェスト。詳細は [tests/README.md](tests/README.md)。
 
 ## License
 
