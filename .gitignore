@@ -8,6 +8,9 @@ playwright-report/
 tests/screenshots/
 *.png.tmp
 
+# demo video intermediates (regenerable: node video/director.cjs && node video/finalize.cjs)
+video/out/
+
 # OS
 .DS_Store
 Thumbs.db

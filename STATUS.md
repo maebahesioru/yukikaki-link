@@ -9,6 +9,7 @@
 - **E2E 35チェック green**: ローカル・本番URL両方で実測（Playwright headless）
 - **QR招待**: 生成済み（本番URLへデコード確認）+ 印刷用招待カード + アプリ内QR表示
 - **証拠キット v1**: docs/evidence-kit.md（札幌/北海道の公開統計・出典URL付き）
+- **デモ動画 完成**: videos/yukikaki-link-demo.mp4（3分48秒 / 1920×1080 / H.264+AAC / 英語ナレーション+英語字幕焼込 / 本番URLの実操作を録画）
 - **プロンプト発表待ち**: 公式 https://neighborhoodhacks.org/challenge/ は "TO BE ANNOUNCED"
 
 ## Done
@@ -19,6 +20,7 @@
 - [x] QR招待（qr-invite.png|svg・招待カード・ホーム画面表示・SWキャッシュ対象）
 - [x] E2E正式化: tests/smoke.cjs（自己完結・BASE_URLで本番検証可・screenshots）
 - [x] 証拠キット: 高齢化/福祉除雪/雪害/転倒/除雪費/町内会（全数値に出典）
+- [x] デモ動画完成: 7シーン・227.7秒（3分48秒）・1920×1080・英語ナレーション+字幕焼込（video/director.cjs → finalize.cjs、全シーンvision QA済み）
 - [x] 監視: Devpost + 公式サイト8ページを3分間隔ポーリング（発表検知ログあり）
 
 ## Next
@@ -26,7 +28,6 @@
 - [ ] **プロンプト発表の確認**（公式キックオフ Oct 16 CDT / https://neighborhoodhacks.org/challenge/）
       → 発表されたら適合判定（トラック・要件・ルーブリック変更の有無）
 - [ ] 聞き取りメモの記入（evidence-kit §3 — チーム実施分）
-- [ ] デモ動画（2-6分）収録・編集（本番URLで動作を見せる）
 - [ ] 提出文作成（Devpost: problem/observation/data + AI開示）
 - [ ] Devpost提出（Oct 23 11:59 PM CST まで）
 

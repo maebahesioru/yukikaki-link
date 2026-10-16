@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Yukikaki Link — Demo Stage</title>
+<style>
+  html, body { margin:0; padding:0; width:1920px; height:1080px; overflow:hidden; }
+  body { font-family:"Noto Sans CJK JP","Noto Color Emoji",system-ui,sans-serif; color:#1c2b3a;
+         background:#eef5fb; -webkit-font-smoothing:antialiased; }
+  #bg { position:fixed; inset:0; background:
+        radial-gradient(circle at 12% 10%, rgba(255,255,255,.95) 0 3px, transparent 4px),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,.9) 0 2px, transparent 3px),
+        radial-gradient(circle at 35% 62%, rgba(255,255,255,.85) 0 2px, transparent 3px),
+        radial-gradient(circle at 92% 84%, rgba(255,255,255,.95) 0 3px, transparent 4px),
+        radial-gradient(circle at 55% 30%, rgba(255,255,255,.8) 0 2px, transparent 3px),
+        linear-gradient(165deg, #e7f2fb 0%, #f6fbfe 46%, #e2eef7 100%); }
+  #progress { position:fixed; top:0; left:0; right:0; height:7px; background:rgba(43,108,176,.14); z-index:20; }
+  #progress i { display:block; height:100%; width:0; background:linear-gradient(90deg,#2b6cb0,#f59e0b);
+                transition-property:width; transition-timing-function:linear; transition-duration:1s; }
+  header { position:absolute; top:40px; left:100px; right:100px; display:flex; align-items:center; z-index:10; }
+  .wordmark { font-weight:800; font-size:33px; letter-spacing:.01em; }
+  .wordmark .en { color:#2b6cb0; font-size:21px; letter-spacing:.16em; margin-left:16px; font-weight:700; }
+  .spacer { flex:1; }
+  #scene-no { color:#51677c; font-weight:700; font-size:25px; letter-spacing:.12em; }
+
+  #stage { position:absolute; top:104px; left:100px; right:100px; bottom:146px; display:flex; gap:64px; }
+  #panel { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; gap:28px; }
+  #panel.swap { animation:rise .6s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes rise { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:none; } }
+  #kicker { font-size:23px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:#2b6cb0; }
+  #ptitle { font-size:60px; font-weight:800; line-height:1.15; margin:0; letter-spacing:-.01em; }
+  #pbody { font-size:28px; }
+  #pbody .grid2 { display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; gap:22px; }
+  #pbody .grid3 { display:grid; grid-template-columns:repeat(3,1fr); grid-auto-rows:1fr; gap:20px; }
+  #pbody .card { background:#fff; border-radius:20px; padding:20px 28px 22px; border:1px solid #e0eaf3; border-left:8px solid #2b6cb0;
+                 box-shadow:0 3px 16px rgba(28,43,58,.10); }
+  #pbody .card.mikan { border-left-color:#f59e0b; }
+  #pbody .num { font-size:44px; font-weight:800; color:#1a4a7a; line-height:1.16; }
+  #pbody .grid3 .num { font-size:36px; }
+  #pbody .lbl { font-size:23px; color:#51677c; line-height:1.42; }
+  #pbody .grid3 .lbl { font-size:20px; }
+  #pbody .src { font-size:16px; color:#66798c; margin-top:5px; }
+  #pbody ul.feature { list-style:none; margin:0; padding:0; display:grid; gap:18px; }
+  #pbody ul.feature li { font-size:31px; display:flex; gap:18px; align-items:center; }
+  #pbody ul.feature li .ic { font-size:34px; width:52px; text-align:center; }
+  #pbody ul.steps { list-style:none; margin:0; padding:0; display:grid; gap:16px; }
+  #pbody ul.steps li { display:flex; gap:20px; align-items:center; font-size:30px; }
+  #pbody ul.steps li .no { width:52px; height:52px; border-radius:50%; background:#2b6cb0; color:#fff;
+                           font-weight:800; font-size:27px; display:flex; align-items:center; justify-content:center; flex:0 0 52px; }
+  #pbody .foot { font-size:19px; color:#7b8ea1; }
+  #pbody .flow { display:flex; gap:16px; align-items:center; font-size:30px; font-weight:700; color:#1a4a7a; }
+  #pbody .flow .ar { color:#f59e0b; font-size:32px; }
+  #pbody .flow .pill { background:#fff; border-radius:16px; padding:14px 26px; box-shadow:0 3px 14px rgba(28,43,58,.10); }
+  #pbody .thanks-jp { font-size:64px; font-weight:800; }
+  #pbody .thanks-en { font-size:30px; color:#51677c; }
+  #pbody .close-wrap { display:flex; gap:52px; align-items:center; }
+  #pbody .links { display:grid; gap:16px; font-size:29px; }
+  #pbody .links b { color:#1a4a7a; }
+  #pbody .qr { width:252px; border-radius:18px; box-shadow:0 6px 24px rgba(28,43,58,.18); background:#fff; padding:8px; }
+
+  #phone-col { width:404px; flex:0 0 404px; display:flex; align-items:center; justify-content:center; }
+  body.full #phone-col { display:none; }
+  #phone { width:388px; height:808px; border:14px solid #14202e; border-radius:58px; overflow:hidden;
+           background:#fff; box-shadow:0 40px 96px rgba(20,32,46,.40), 0 8px 26px rgba(20,32,46,.22); }
+  body:not(.full) #phone { animation:phoneIn .95s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes phoneIn { from { transform:translateX(280px) scale(.9); opacity:0; } to { transform:none; opacity:1; } }
+  #app { width:100%; height:100%; border:0; display:block; background:#fff; }
+
+  #subbar { position:absolute; left:100px; right:100px; bottom:30px; z-index:15; }
+  #sub { background:rgba(17,29,43,.93); color:#fff; border-radius:20px; padding:18px 46px; font-size:30px;
+         font-weight:600; text-align:center; line-height:1.42; box-shadow:0 16px 44px rgba(20,32,46,.30);
+         opacity:0; transition:opacity .32s ease; }
+  #sub.on { opacity:1; }
+
+  #cursor { position:fixed; left:0; top:0; width:46px; height:46px; margin:-23px 0 0 -23px; border-radius:50%;
+            background:rgba(43,108,176,.16); border:3px solid rgba(43,108,176,.78);
+            box-shadow:0 0 0 8px rgba(43,108,176,.10); pointer-events:none; z-index:99; opacity:0;
+            transition:transform .42s cubic-bezier(.4,0,.2,1), opacity .3s ease; }
+  #cursor i { position:absolute; left:50%; top:50%; width:9px; height:9px; margin:-4.5px 0 0 -4.5px;
+              border-radius:50%; background:#2b6cb0; }
+  #cursor.pulse { animation:cpulse .55s ease; }
+  @keyframes cpulse {
+    0% { box-shadow:0 0 0 8px rgba(43,108,176,.12); }
+    45% { box-shadow:0 0 0 26px rgba(43,108,176,.20); }
+    100% { box-shadow:0 0 0 8px rgba(43,108,176,.12); }
+  }
+</style>
+</head>
+<body class="full">
+  <div id="bg"></div>
+  <div id="progress"><i></i></div>
+  <header>
+    <div class="wordmark">🍊 ゆきかきリンク<span class="en">YUKIKAKI LINK</span></div>
+    <div class="spacer"></div>
+    <div id="scene-no">— / 07</div>
+  </header>
+
+  <main id="stage">
+    <section id="panel">
+      <div id="kicker"></div>
+      <h1 id="ptitle"></h1>
+      <div id="pbody"></div>
+    </section>
+    <section id="phone-col">
+      <div id="phone">
+        <iframe id="app" src="https://maebahesioru.github.io/yukikaki-link/" title="Yukikaki Link app"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <div id="subbar"><div id="sub"></div></div>
+  <div id="cursor"><i></i></div>
+
+<script>
+'use strict';
+// NOTE: innerHTML usage below is safe by construction — every string passed to it is a
+// static, author-defined constant from this file or video/director.cjs (a local recording
+// tool). No network/user/third-party data ever reaches these sinks.
+var $ = function (id) { return document.getElementById(id); };
+
+// first-frame timestamp for video/audio alignment
+window.__ff = null; window.__ready = false;
+requestAnimationFrame(function () { requestAnimationFrame(function () {
+  window.__ff = performance.now(); window.__ready = true;
+}); });
+
+var CLOSING_HTML =
+  '<div class="close-wrap">' +
+    '<div>' +
+      '<div class="thanks-jp">ありがとう ございました</div>' +
+      '<div class="thanks-en">Thank you — おたがいさま。</div>' +
+      '<div class="links" style="margin-top:30px">' +
+        '<div>▶ <b>Live app:</b> maebahesioru.github.io/yukikaki-link</div>' +
+        '<div>⌂ <b>Code:</b> github.com/maebahesioru/yukikaki-link</div>' +
+        '<div>✔ No accounts · No money · Works offline</div>' +
+      '</div>' +
+    '</div>' +
+    '<img class="qr" src="/assets/qr-invite.png" alt="QR code to the app">' +
+  '</div>';
+
+window.stage = {
+  scene: function (o) {
+    document.body.classList.toggle('full', o.layout === 'full');
+    $('scene-no').textContent = String(o.no).padStart(2, '0') + ' / ' + String(o.total || 7).padStart(2, '0');
+    $('kicker').textContent = o.kicker || '';
+    $('ptitle').textContent = o.title || '';
+    $('pbody').innerHTML = o.body || '';
+    var p = $('panel');
+    p.classList.remove('swap'); void p.offsetWidth; p.classList.add('swap');
+  },
+  subtitle: function (t) {
+    var s = $('sub');
+    if (!t) { s.classList.remove('on'); return; }
+    s.textContent = t; s.classList.add('on');
+  },
+  progress: function (pct, durMs) {
+    var b = $('progress').firstElementChild;
+    b.style.transitionDuration = (durMs || 800) + 'ms';
+    b.style.width = pct + '%';
+  },
+  cursor: function (x, y) {
+    var c = $('cursor');
+    c.style.opacity = '1';
+    c.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+  },
+  cursorHide: function () { $('cursor').style.opacity = '0'; },
+  pulse: function () {
+    var c = $('cursor');
+    c.classList.remove('pulse'); void c.offsetWidth; c.classList.add('pulse');
+  },
+  close: function () {
+    $('kicker').textContent = 'YUKIKAKI LINK · NEIGHBORHOOD HACKS 2026';
+    $('ptitle').textContent = '';
+    $('pbody').innerHTML = CLOSING_HTML;
+    var p = $('panel');
+    p.classList.remove('swap'); void p.offsetWidth; p.classList.add('swap');
+  }
+};
+</script>
+</body>
+</html>

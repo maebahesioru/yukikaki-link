@@ -1,0 +1,56 @@
+{
+  "offset": 1.581,
+  "total": 227.748,
+  "appUrl": "https://maebahesioru.github.io/yukikaki-link/",
+  "scenes": [
+    {
+      "n": 1,
+      "lead": 1.2,
+      "tail": 1,
+      "tts": 53.736,
+      "dur": 55.936
+    },
+    {
+      "n": 2,
+      "lead": 0.8,
+      "tail": 1,
+      "tts": 21.96,
+      "dur": 23.76
+    },
+    {
+      "n": 3,
+      "lead": 0.8,
+      "tail": 1,
+      "tts": 25.368,
+      "dur": 27.168
+    },
+    {
+      "n": 4,
+      "lead": 0.8,
+      "tail": 1,
+      "tts": 23.424,
+      "dur": 25.224
+    },
+    {
+      "n": 5,
+      "lead": 0.8,
+      "tail": 1,
+      "tts": 16.776,
+      "dur": 18.576
+    },
+    {
+      "n": 6,
+      "lead": 0.8,
+      "tail": 1,
+      "tts": 28.224,
+      "dur": 30.024
+    },
+    {
+      "n": 7,
+      "lead": 0.8,
+      "tail": 1.5,
+      "tts": 44.76,
+      "dur": 47.06
+    }
+  ]
+}
