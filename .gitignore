@@ -1,0 +1,12 @@
+# deps / tooling
+node_modules/
+package-lock.json
+
+# test artifacts
+test-results/
+playwright-report/
+*.png.tmp
+
+# OS
+.DS_Store
+Thumbs.db
