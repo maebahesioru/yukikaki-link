@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="mg" cx="38%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#ffd08a"/>
+      <stop offset="55%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </radialGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#eaf4fb"/>
+  <!-- snowflakes -->
+  <text x="18" y="34" font-size="20" fill="#bcd9ee">❄</text>
+  <text x="96" y="110" font-size="16" fill="#bcd9ee">❄</text>
+  <!-- mikan body -->
+  <circle cx="64" cy="72" r="34" fill="url(#mg)" stroke="#b4600a" stroke-opacity=".25" stroke-width="2"/>
+  <!-- leaf -->
+  <ellipse cx="74" cy="34" rx="13" ry="6" fill="#4a9d5f" transform="rotate(-28 74 34)"/>
+  <!-- face -->
+  <circle cx="53" cy="70" r="3.6" fill="#4a3323"/>
+  <circle cx="75" cy="70" r="3.6" fill="#4a3323"/>
+  <path d="M54 82 q10 9 20 0" stroke="#4a3323" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+  <circle cx="46" cy="78" r="4.6" fill="#f0785a" opacity=".35"/>
+  <circle cx="82" cy="78" r="4.6" fill="#f0785a" opacity=".35"/>
+  <!-- knitted hat -->
+  <path d="M32 58 a32 32 0 0 1 64 0" stroke="#c0392b" stroke-width="15" fill="none" stroke-linecap="round"/>
+  <path d="M31 60 a33 33 0 0 1 66 0" stroke="#a93226" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <circle cx="64" cy="24" r="8.5" fill="#f8f4ec" stroke="#e0d8c8" stroke-width="1.6"/>
+</svg>

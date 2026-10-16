@@ -49,6 +49,7 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 .app { max-width: 560px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); border: 0; }
 
 /* ============ Top bar ============ */
 .topbar {
@@ -70,17 +71,18 @@ body {
 .toggle-large[aria-pressed="true"] { background: var(--blue); color: var(--white); }
 
 /* ============ Views ============ */
-main { flex: 1; padding: .9em .9em 5.5em; }
+main { flex: 1; padding: .9em .9em 6em; }
 .view { display: none; }
 .view.active { display: block; animation: fade .18s ease; }
 @keyframes fade { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; transform: none;} }
 h1 { font-size: 1.35em; margin: .2em 0 .3em; }
-h2 { font-size: 1.1em; margin: .8em 0 .4em; }
+h2 { font-size: 1.08em; margin: .8em 0 .4em; }
 .card {
   background: var(--white); border-radius: var(--radius);
   box-shadow: var(--shadow); padding: 1em; margin: .7em 0;
 }
 .muted { color: var(--ink-soft); font-size: .85em; }
+ruby rt { font-size: .55em; color: var(--ink-soft); }
 
 /* Big action buttons */
 .bigbtn {
@@ -100,6 +102,20 @@ h2 { font-size: 1.1em; margin: .8em 0 .4em; }
 .bigbtn.primary small { color: var(--blue-soft); }
 .bigbtn.warm { border-color: var(--mikan); }
 .bigbtn.warm .emoji { filter: drop-shadow(0 2px 2px rgba(217,119,6,.3)); }
+.bigbtn:disabled { opacity: .55; cursor: not-allowed; }
+
+/* Choice buttons (3-tap flow) */
+.choice {
+  display: block; width: 100%; text-align: center; cursor: pointer;
+  background: var(--white); border: 2px solid var(--blue-soft);
+  border-radius: var(--radius-s); box-shadow: var(--shadow);
+  padding: .85em .6em; margin: .5em 0;
+  font-family: var(--font); font-size: 1.02em; font-weight: 700; color: var(--ink);
+}
+.choice:active { transform: scale(.98); }
+.choice.selected { border-color: var(--blue); background: var(--blue-soft); }
+.choice:disabled { opacity: .5; cursor: not-allowed; }
+.choice .sub { display: block; font-size: .75em; font-weight: 600; color: var(--ink-soft); }
 
 /* Back link */
 .backlink {
@@ -108,6 +124,38 @@ h2 { font-size: 1.1em; margin: .8em 0 .4em; }
   font-family: var(--font); font-size: .95em; font-weight: 700;
   padding: .35em .2em; cursor: pointer;
 }
+
+/* Steps indicator */
+.steps { display: flex; gap: .5em; margin: .4em 0 .6em; }
+.steps span {
+  flex: 1; height: 8px; border-radius: 4px; background: #cfdeeb;
+}
+.steps span.on { background: var(--blue); }
+
+/* Request cards (board) */
+.reqcard { border-left: 6px solid var(--blue); }
+.reqcard.accepted { border-left-color: var(--mikan); }
+.reqcard .row1 { display: flex; align-items: baseline; gap: .5em; flex-wrap: wrap; }
+.reqcard .block-name { font-weight: 800; font-size: 1.05em; }
+.badge {
+  display: inline-block; font-size: .68em; font-weight: 700;
+  border-radius: 999px; padding: .15em .6em; vertical-align: middle;
+}
+.badge.sample { background: var(--snow-2); color: var(--ink-soft); }
+.badge.open { background: var(--blue-soft); color: var(--blue-deep); }
+.badge.accepted { background: #fdeecd; color: var(--mikan-deep); }
+.badge.done { background: #d8f0e2; color: var(--ok); }
+.reqcard .meta { color: var(--ink-soft); font-size: .85em; margin: .25em 0 .5em; }
+
+/* Toast */
+.toast {
+  position: fixed; left: 50%; bottom: 6em; transform: translateX(-50%) translateY(20px);
+  background: var(--ink); color: var(--white); font-weight: 700; font-size: .9em;
+  padding: .7em 1.1em; border-radius: 999px; box-shadow: var(--shadow-lift);
+  opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease;
+  z-index: 50; max-width: 90vw; text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* ============ Bottom nav ============ */
 .bottomnav {
@@ -127,11 +175,18 @@ h2 { font-size: 1.1em; margin: .8em 0 .4em; }
 .bottomnav button .emoji { font-size: 1.5em; }
 .bottomnav button[aria-current="true"] { color: var(--blue); background: var(--blue-soft); }
 
-/* ============ Placeholder (skeleton) ============ */
-.todo-note {
-  border: 2px dashed var(--blue-soft); border-radius: var(--radius);
-  padding: .8em 1em; color: var(--ink-soft); font-size: .85em; margin-top: .6em;
-}
+/* Counter */
+.big-number { font-size: 2.2em; font-weight: 800; color: var(--blue-deep); line-height: 1.1; }
+.statrow { display: flex; gap: .7em; }
+.statrow .card { flex: 1; text-align: center; margin: .4em 0; }
+.bars { margin-top: .4em; }
+.bar-row { display: flex; align-items: center; gap: .5em; font-size: .82em; margin: .3em 0; }
+.bar-row .lbl { width: 4.2em; font-weight: 700; }
+.bar-row .track { flex: 1; background: #dce8f2; height: 14px; border-radius: 7px; overflow: hidden; }
+.bar-row .fill { height: 100%; background: linear-gradient(90deg, var(--blue-deep), var(--blue)); border-radius: 7px; min-width: 8px; }
+
+canvas { max-width: 100%; display: block; margin: 0 auto; }
+.map-hint { text-align: center; font-size: .92em; font-weight: 700; color: #3f5670; margin: .5em 0; }
 </style>
 </head>
 <body>
@@ -146,58 +201,73 @@ h2 { font-size: 1.1em; margin: .8em 0 .4em; }
   <main>
     <!-- ===== HOME ===== -->
     <section id="view-home" class="view active" aria-labelledby="home-title">
-      <h1 id="home-title">雪かき、おたがいさま。</h1>
+      <h1 id="home-title"><ruby>雪<rt>ゆき</rt></ruby>かき、おたがいさま。</h1>
       <p class="muted">近所の「雪かきをたのむ」「手伝いたい」をつなぐ、あんしんな掲示板です。</p>
 
       <button class="bigbtn primary" data-goto="request">
         <span class="emoji">❄️</span>
-        <span>雪かきを たのむ<small>3タップで おねがいできます</small></span>
+        <span>雪かきを たのむ<small>3つの タップで おねがいできます</small></span>
       </button>
       <button class="bigbtn warm" data-goto="board">
         <span class="emoji">💪</span>
-        <span>手伝いたい<small>近所の依頼を見る</small></span>
+        <span>手伝いたい<small>近所の たのみごとを 見る</small></span>
       </button>
+
+      <div class="card" id="home-mine"></div>
 
       <div class="card">
         <h2 style="margin-top:0">🍊 みかんの ひとこと</h2>
-        <p class="muted">「毛糸のぼうしをかぶった みかん」が、この町の助け合いを見守っています。</p>
-        <div class="todo-note">SKELETON: マスコット描画・カウンターは次コミットで実装</div>
+        <p class="muted">毛糸のぼうしをかぶった「みかん」が、この町の 助け合いを 見守っています。みんなの「ありがとう」が ふえると、みかんも おおきくなります。</p>
       </div>
     </section>
 
-    <!-- ===== REQUEST ===== -->
+    <!-- ===== REQUEST (3 taps) ===== -->
     <section id="view-request" class="view" aria-labelledby="req-title">
       <button class="backlink" data-goto="home">← もどる</button>
       <h1 id="req-title">雪かきを たのむ</h1>
-      <div class="todo-note">SKELETON: 3タップフロー(場所→種類→期限→確認)を次コミットで実装</div>
+      <div class="steps" id="req-steps"><span class="on"></span><span></span><span></span></div>
+      <div id="req-body"></div>
     </section>
 
     <!-- ===== BOARD ===== -->
     <section id="view-board" class="view" aria-labelledby="board-title">
       <button class="backlink" data-goto="home">← もどる</button>
-      <h1 id="board-title">手伝いたい(近所の依頼)</h1>
-      <div class="todo-note">SKELETON: 依頼ボード+受注フローを次コミットで実装</div>
+      <h1 id="board-title">手伝いたい（近所のたのみごと）</h1>
+      <p class="muted" id="board-sub">ちかい<ruby>順<rt>じゅん</rt></ruby>に ならんでいます。</p>
+      <div id="board-list"></div>
     </section>
 
     <!-- ===== MYREQ ===== -->
     <section id="view-myreq" class="view" aria-labelledby="myreq-title">
       <button class="backlink" data-goto="home">← もどる</button>
       <h1 id="myreq-title">わたしの たのみごと</h1>
-      <div class="todo-note">SKELETON: 依頼の進捗表示を次コミットで実装</div>
+      <div id="myreq-list"></div>
     </section>
 
     <!-- ===== COMPLETE / THANKS ===== -->
     <section id="view-complete" class="view" aria-labelledby="done-title">
       <button class="backlink" data-goto="board">← もどる</button>
-      <h1 id="done-title">おつかれさまでした!</h1>
-      <div class="todo-note">SKELETON: ありがとう交換フローを次コミットで実装</div>
+      <h1 id="done-title">おつかれさまでした！</h1>
+      <div id="complete-body"></div>
     </section>
 
     <!-- ===== COMMUNITY ===== -->
     <section id="view-community" class="view" aria-labelledby="com-title">
       <button class="backlink" data-goto="home">← もどる</button>
       <h1 id="com-title">この町の 助け合い</h1>
-      <div class="todo-note">SKELETON: カウンター+マスコット成長を次コミットで実装</div>
+      <div class="statrow">
+        <div class="card"><div class="big-number" id="com-total">0</div><div class="muted">みんなの<br>ありがとう</div></div>
+        <div class="card"><div class="big-number" id="com-done">0</div><div class="muted">かんりょうした<br>たのみごと</div></div>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0">🍊 みかんの せいちょう</h2>
+        <canvas id="mascot" width="240" height="200" aria-label="みかんのマスコット。ありがとうがふえると大きくなります。"></canvas>
+        <p class="muted" id="mascot-note" style="text-align:center"></p>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0">丁目ごとの ありがとう</h2>
+        <div class="bars" id="com-bars"></div>
+      </div>
     </section>
 
     <!-- ===== RULES ===== -->
@@ -205,23 +275,28 @@ h2 { font-size: 1.1em; margin: .8em 0 .4em; }
       <button class="backlink" data-goto="home">← もどる</button>
       <h1 id="rules-title">みんなの ルールと あんぜん</h1>
       <div class="card">
-        <h2 style="margin-top:0">あんぜん 5か条</h2>
+        <h2 style="margin-top:0">あんぜん 5か<ruby>条<rt>じょう</rt></ruby></h2>
         <ol>
-          <li>屋根の雪おろしは しない(あぶないので このアプリでは たのめません)</li>
-          <li>体調がわるい日は 無理をしない</li>
-          <li>ひとりで はせず、声をかけあう</li>
-          <li>転倒・落雪に 注意する</li>
-          <li>いやなときは ことわる(それも だいじょうぶ)</li>
+          <li><ruby>屋根<rt>やね</rt></ruby>の<ruby>雪<rt>ゆき</rt></ruby>おろしは しない（あぶないので このアプリでは たのめません）</li>
+          <li>体調が わるい日は 無理をしない</li>
+          <li>ひとりで はせず、声を かけあう</li>
+          <li><ruby>転倒<rt>てんとう</rt></ruby>・<ruby>落雪<rt>らくせつ</rt></ruby>に 注意する</li>
+          <li>いやなときは ことわる（それも だいじょうぶ）</li>
         </ol>
-        <p class="muted">ボランティア活動中のけがに備えて: 札幌市 地域活動保険(ボランティア活動保険)</p>
+        <p class="muted">ボランティア活動中の けがに そなえて：札幌市 <ruby>地域活動保険<rt>ちいきかつどうほけん</rt></ruby>（ボランティア活動保険）</p>
       </div>
       <div class="card">
         <h2 style="margin-top:0">おかねは かかりません</h2>
-        <p class="muted">このアプリは 金銭のやりとりを しません。かわりに「ありがとう」を おくりあいます。</p>
+        <p class="muted">このアプリは おかねの やりとりを しません。かわりに「ありがとう」を おくりあいます。</p>
       </div>
       <div class="card">
         <h2 style="margin-top:0">プライバシー</h2>
-        <p class="muted">アカウント登録は ありません。データは この端末の なかに だけ ほぞんされます。</p>
+        <p class="muted">アカウント<ruby>登録<rt>とうろく</rt></ruby>は ありません。データは この<ruby>端末<rt>たんまつ</rt></ruby>の なかに だけ ほぞんされます。</p>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0">デモ用</h2>
+        <p class="muted">この画面は デモ・サンプルデータで 動いています。</p>
+        <button class="choice" id="btnReset" style="color:var(--danger);border-color:#f0c4bf">データを さいしょに もどす</button>
       </div>
     </section>
   </main>
@@ -234,45 +309,600 @@ h2 { font-size: 1.1em; margin: .8em 0 .4em; }
   </nav>
 </div>
 
+<div class="toast" id="toast" role="status"></div>
+<div class="sr-only" id="live" aria-live="polite"></div>
+
 <script>
-/* ============ Skeleton logic: view switching + large text ============ */
 (function () {
   'use strict';
-  var views = ['home','request','board','myreq','complete','community','rules'];
-  var navMap = { home:'home', board:'board', community:'community', rules:'rules' };
 
-  function show(name) {
-    if (views.indexOf(name) === -1) name = 'home';
-    views.forEach(function (v) {
-      var el = document.getElementById('view-' + v);
-      if (el) el.classList.toggle('active', v === name);
+  /* =================== Constants =================== */
+  var DATA_KEY = 'ykl_v1';
+  var BLOCKS = ['1丁目','2丁目','3丁目','4丁目','5丁目'];
+  var TYPES = {
+    entrance: { label: '玄関前', emoji: '🚪' },
+    path:     { label: '通路',   emoji: '🚶' },
+    parking:  { label: '駐車場', emoji: '🚗' }
+  };
+  var DUES = { now: '今すぐ', today: '今日中', tomorrow: '明日の朝' };
+  var MY_BLOCK = 2; /* 0-indexed block index of 3丁目 (BLOCKS[2] = '3丁目') */
+
+  /* =================== State =================== */
+  function seedRequests() {
+    var now = Date.now();
+    return [
+      { id: 'd1', block: 0, type: 'entrance', due: 'now',      status: 'open', createdAt: now - 25 * 60000, demo: true, mine: false, helper: null, thanksSent: false },
+      { id: 'd2', block: 4, type: 'parking',  due: 'today',    status: 'open', createdAt: now - 95 * 60000, demo: true, mine: false, helper: null, thanksSent: false },
+      { id: 'd3', block: 1, type: 'path',     due: 'tomorrow', status: 'open', createdAt: now - 50 * 60000, demo: true, mine: false, helper: null, thanksSent: false }
+    ];
+  }
+  function defaults() {
+    return {
+      requests: seedRequests(),
+      thanksTotal: 12,
+      thanksByBlock: [3, 1, 4, 2, 2],
+      myGiven: 0,
+      myReceived: 0,
+      completedByMe: 0
+    };
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(DATA_KEY);
+      if (raw) {
+        var d = JSON.parse(raw);
+        if (d && Array.isArray(d.requests)) return d;
+      }
+    } catch (e) {}
+    return defaults();
+  }
+  function save() {
+    try { localStorage.setItem(DATA_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  var state = load();
+
+  /* =================== Utils =================== */
+  /* Note on innerHTML safety: all dynamic strings rendered via innerHTML pass through esc()
+     (escapes & < > " '), or are app-controlled constants/numbers (TYPES/DUES/BLOCKS labels,
+     generated ids like 'r'+Date.now()). No server or third-party data enters the DOM, so
+     template-string rendering here is XSS-safe by construction. */
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
-    document.querySelectorAll('.bottomnav button').forEach(function (b) {
-      b.setAttribute('aria-current', String(navMap[name] === b.dataset.goto));
-    });
-    try { location.hash = '#' + name; } catch (e) {}
-    window.scrollTo(0, 0);
+  }
+  function announce(msg) {
+    var live = $('#live');
+    if (live) live.textContent = msg;
+  }
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $('#toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600);
+    announce(msg);
+  }
+  function distText(block) {
+    var d = Math.abs(block - MY_BLOCK);
+    if (d === 0) return 'おなじ丁目';
+    if (d === 1) return 'すぐとなり';
+    return d + 'つ となり';
+  }
+  function agoText(ts) {
+    var m = Math.max(1, Math.round((Date.now() - ts) / 60000));
+    if (m < 60) return m + 'ぷん前';
+    var h = Math.round(m / 60);
+    return h + 'じかん前';
   }
 
+  /* =================== Audio (procedural chimes) =================== */
+  var audioCtx = null;
+  function chime(kind) {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var notes = kind === 'thanks' ? [660, 880, 1175] : kind === 'post' ? [440, 587] : kind === 'accept' ? [523, 784] : [523, 659];
+      notes.forEach(function (f, i) {
+        var t0 = audioCtx.currentTime + i * 0.10;
+        var o = audioCtx.createOscillator();
+        var g = audioCtx.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(0.12, t0 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.5);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(t0); o.stop(t0 + 0.55);
+      });
+    } catch (e) {}
+  }
+
+  /* =================== Navigation =================== */
+  var views = ['home','request','board','myreq','complete','community','rules'];
+  var navMap = { home:'home', board:'board', community:'community', rules:'rules' };
+  var currentView = 'home';
+  function show(name) {
+    if (views.indexOf(name) === -1) name = 'home';
+    currentView = name;
+    views.forEach(function (v) {
+      var el = $('#view-' + v);
+      if (el) el.classList.toggle('active', v === name);
+    });
+    $$('.bottomnav button').forEach(function (b) {
+      b.setAttribute('aria-current', String(navMap[name] === b.dataset.goto));
+    });
+    try { if (location.hash !== '#' + name) location.hash = name; } catch (e) {}
+    window.scrollTo(0, 0);
+    render(name);
+  }
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-goto]');
-    if (t) { show(t.dataset.goto); }
+    if (t) show(t.dataset.goto);
   });
 
-  var btnLarge = document.getElementById('btnLargeText');
-  btnLarge.addEventListener('click', function () {
-    var on = document.documentElement.classList.toggle('large');
+  /* =================== Large text toggle =================== */
+  var btnLarge = $('#btnLargeText');
+  function applyLarge(on) {
+    document.documentElement.classList.toggle('large', on);
     btnLarge.setAttribute('aria-pressed', String(on));
+  }
+  btnLarge.addEventListener('click', function () {
+    var on = !document.documentElement.classList.contains('large');
+    applyLarge(on);
     try { localStorage.setItem('ykl_large', on ? '1' : '0'); } catch (e) {}
+    toast(on ? '文字を おおきくしました' : '文字を もとに もどしました');
   });
-  try {
-    if (localStorage.getItem('ykl_large') === '1') {
-      document.documentElement.classList.add('large');
-      btnLarge.setAttribute('aria-pressed', 'true');
-    }
-  } catch (e) {}
+  try { applyLarge(localStorage.getItem('ykl_large') === '1'); } catch (e) {}
 
-  if (location.hash) show(location.hash.slice(1));
+  /* =================== REQUEST FLOW (3 taps) =================== */
+  var draft = { block: null, type: null, due: null, step: 1 };
+
+  function renderRequest() {
+    var body = $('#req-body');
+    var steps = $$('#req-steps span');
+    steps.forEach(function (s, i) { s.classList.toggle('on', i < draft.step); });
+
+    if (draft.step === 1) {
+      body.innerHTML =
+        '<h2>① ばしょは どこですか？</h2>' +
+        '<p class="map-hint" id="map-hint">👇 ちずの 中から たのみたい丁目を タップしてください</p>' +
+        '<canvas id="map" width="520" height="170" aria-label="町内会の地図。たのみたい丁目をタップしてください。"></canvas>' +
+        '<button class="choice" data-place="' + MY_BLOCK + '" style="margin-top:.7em">📍 いまの ばしょ（' + BLOCKS[MY_BLOCK] + '）を えらぶ</button>' +
+        '<div class="card" style="margin-top:.8em"><h2 style="margin-top:0">つかいかた（3タップ）</h2>' +
+        '<p class="muted">① ばしょ → ② ないよう → ③ しめきり の じゅんに えらぶだけ。アカウントは いりません。</p></div>';
+      drawMap();
+      var map = $('#map');
+      map.addEventListener('click', function (ev) {
+        var r = map.getBoundingClientRect();
+        var x = (ev.clientX - r.left) * (map.width / r.width);
+        var idx = Math.max(0, Math.min(4, Math.floor(x / (map.width / 5))));
+        pickBlock(idx);
+      });
+      body.addEventListener('click', function (ev) {
+        var b = ev.target.closest('[data-place]');
+        if (b) pickBlock(parseInt(b.dataset.place, 10));
+      });
+    } else if (draft.step === 2) {
+      body.innerHTML =
+        '<h2>② どこを かたづけますか？</h2>' +
+        '<p class="muted">ばしょ：<b>' + esc(BLOCKS[draft.block]) + '</b>　<button class="backlink" data-back="1">← なおす</button></p>' +
+        '<button class="choice" data-type="entrance">🚪 玄関前</button>' +
+        '<button class="choice" data-type="path">🚶 通路（門から玄関まで）</button>' +
+        '<button class="choice" data-type="parking">🚗 駐車場</button>' +
+        '<button class="choice" disabled>🏠 屋根（あぶないので たのめません）<span class="sub">雪おろしは 業者さんに おねがいしましょう</span></button>';
+      body.addEventListener('click', function (ev) {
+        var b = ev.target.closest('[data-type]');
+        if (b) pickType(b.dataset.type);
+        var back = ev.target.closest('[data-back]');
+        if (back) { draft.step = 1; renderRequest(); }
+      });
+    } else if (draft.step === 3) {
+      body.innerHTML =
+        '<h2>③ いつまでに ほしいですか？</h2>' +
+        '<p class="muted">ばしょ：<b>' + esc(BLOCKS[draft.block]) + '</b>／' + TYPES[draft.type].emoji + ' ' + TYPES[draft.type].label +
+        '　<button class="backlink" data-back="2">← なおす</button></p>' +
+        '<button class="choice" data-due="now">⚡ 今すぐ</button>' +
+        '<button class="choice" data-due="today">🌤 今日中</button>' +
+        '<button class="choice" data-due="tomorrow">🌅 明日の朝</button>';
+      body.addEventListener('click', function (ev) {
+        var b = ev.target.closest('[data-due]');
+        if (b) pickDue(b.dataset.due);
+        var back = ev.target.closest('[data-back]');
+        if (back) { draft.step = 2; renderRequest(); }
+      });
+    } else {
+      body.innerHTML =
+        '<div class="card"><h2 style="margin-top:0">かくにん</h2>' +
+        '<p>ばしょ：<b>' + esc(BLOCKS[draft.block]) + '</b></p>' +
+        '<p>ないよう：<b>' + TYPES[draft.type].emoji + ' ' + TYPES[draft.type].label + '</b></p>' +
+        '<p>しめきり：<b>' + DUES[draft.due] + '</b></p>' +
+        '<button class="bigbtn primary" data-post="1"><span class="emoji">📨</span><span>このないようで たのむ<small>近所の人に とどきます</small></span></button>' +
+        '<button class="backlink" data-back="3">← なおす</button></div>';
+      body.addEventListener('click', function (ev) {
+        var p = ev.target.closest('[data-post]');
+        if (p) postRequest();
+        var back = ev.target.closest('[data-back]');
+        if (back) { draft.step = 3; renderRequest(); }
+      });
+    }
+  }
+  function pickBlock(idx) {
+    draft.block = idx; draft.step = 2; renderRequest(); announce('ばしょを ' + BLOCKS[idx] + ' に しました');
+  }
+  function pickType(t) {
+    if (!TYPES[t]) return;
+    draft.type = t; draft.step = 3; renderRequest(); announce(TYPES[t].label + ' を えらびました');
+  }
+  function pickDue(d) {
+    draft.due = d; draft.step = 4; renderRequest(); announce(DUES[d] + ' を えらびました');
+  }
+  function postRequest() {
+    var req = {
+      id: 'r' + Date.now(), block: draft.block, type: draft.type, due: draft.due,
+      status: 'open', createdAt: Date.now(), demo: false, mine: true, helper: null, thanksSent: false
+    };
+    state.requests.unshift(req);
+    save();
+    chime('post');
+    toast('たのみごとを だしました 🎀 ご近所に とどきます');
+    draft = { block: null, type: null, due: null, step: 1 };
+    show('myreq');
+  }
+
+  /* ---- Map canvas ---- */
+  function drawMap() {
+    var cv = $('#map');
+    if (!cv) return;
+    var ctx = cv.getContext('2d');
+    var W = cv.width, H = cv.height;
+    var pad = 10, gap = 8;
+    var bw = (W - pad * 2 - gap * 4) / 5;
+    ctx.clearRect(0, 0, W, H);
+
+    for (var i = 0; i < 5; i++) {
+      var x = pad + i * (bw + gap);
+      var y = 30, bh = H - 56;
+      var sel = (draft.block === i);
+
+      /* snowy roof first (wider than the house = eaves); body then covers its base
+         so the roof reads as one clean attached shape */
+      ctx.beginPath();
+      ctx.moveTo(x - 7, y + 3);
+      ctx.lineTo(x + bw / 2, y - 27);
+      ctx.lineTo(x + bw + 7, y + 3);
+      ctx.closePath();
+      ctx.fillStyle = sel ? '#cfe3f5' : '#eef7fd';
+      ctx.strokeStyle = sel ? '#ffffff' : '#9fc3de';
+      ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
+      ctx.fill(); ctx.stroke();
+
+      /* house body */
+      ctx.fillStyle = sel ? '#2b6cb0' : '#ffffff';
+      ctx.strokeStyle = sel ? '#1a4a7a' : '#bcd6ea';
+      ctx.lineWidth = 3;
+      roundRect(ctx, x, y, bw, bh, 10);
+      ctx.fill(); ctx.stroke();
+
+      /* block number */
+      ctx.fillStyle = sel ? '#ffffff' : '#1c2b3a';
+      ctx.font = '700 22px sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(String(i + 1), x + bw / 2, y + bh / 2 - 12);
+      ctx.font = '600 13px sans-serif';
+      ctx.fillStyle = sel ? '#d7e9f7' : '#51677c';
+      ctx.fillText('丁目', x + bw / 2, y + bh / 2 + 8);
+
+      if (i === MY_BLOCK) {
+        var pw = 46, ph = 18;
+        var px = x + bw / 2 - pw / 2, py = y + bh - ph - 8;
+        roundRect(ctx, px, py, pw, ph, 9);
+        ctx.fillStyle = sel ? '#ffffff' : '#c9dff2';
+        ctx.fill();
+        ctx.fillStyle = sel ? '#1a4a7a' : '#1a4a7a';
+        ctx.font = '700 12px sans-serif';
+        ctx.fillText('じぶん', x + bw / 2, py + ph / 2 + 0.5);
+      }
+      if (sel) {
+        ctx.font = '700 15px sans-serif';
+        ctx.fillStyle = '#2b6cb0';
+        ctx.fillText('❄', x + bw / 2, y - 14);
+      }
+    }
+  }
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  /* =================== BOARD =================== */
+  function openRequests() {
+    return state.requests
+      .filter(function (r) { return r.status === 'open' || r.status === 'accepted'; })
+      .sort(function (a, b) {
+        var da = Math.abs(a.block - MY_BLOCK), db = Math.abs(b.block - MY_BLOCK);
+        if (da !== db) return da - db;
+        return b.createdAt - a.createdAt;
+      });
+  }
+  function renderBoard() {
+    var list = $('#board-list');
+    var reqs = openRequests();
+    if (!reqs.length) {
+      list.innerHTML = '<div class="card"><p>いまは たのみごとが ありません。🍊 みかんが 見はりを しています。</p></div>';
+      return;
+    }
+    list.innerHTML = reqs.map(function (r) {
+      var t = TYPES[r.type] || { label: '?', emoji: '❓' };
+      var isAcceptedByMe = (r.status === 'accepted' && r.helper === 'me');
+      var badge = r.demo ? '<span class="badge sample">サンプル</span>' : (r.mine ? '<span class="badge sample">じぶんの たのみごと</span>' : '');
+      var status = r.status === 'open'
+        ? '<span class="badge open">まだ だれも いません</span>'
+        : (isAcceptedByMe ? '<span class="badge accepted">あなたが てつだいます</span>' : '<span class="badge accepted">てつだいの もうしで あり</span>');
+      var action = r.mine
+        ? '<button class="choice" data-goto="myreq">わたしの たのみごとを 見る</button>'
+        : (r.status === 'open'
+          ? '<button class="bigbtn warm" data-accept="' + r.id + '"><span class="emoji">💪</span><span>手伝います<small>この たのみごを ひきうける</small></span></button>'
+          : (isAcceptedByMe
+            ? '<button class="bigbtn primary" data-complete="' + r.id + '"><span class="emoji">✅</span><span>かんりょうした！<small>雪かきが おわりました</small></span></button>'
+            : ''));
+      return '<div class="card reqcard ' + (r.status === 'accepted' ? 'accepted' : '') + '">' +
+        '<div class="row1"><span class="block-name">' + esc(BLOCKS[r.block]) + '</span> ' + badge + ' ' + status + '</div>' +
+        '<div class="meta">' + t.emoji + ' ' + esc(t.label) + '／しめきり：' + esc(DUES[r.due] || '?') + '／' + esc(distText(r.block)) + '・' + esc(agoText(r.createdAt)) + '</div>' +
+        action +
+        '</div>';
+    }).join('');
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-accept]');
+    if (a) { acceptRequest(a.dataset.accept); return; }
+    var c = e.target.closest('[data-complete]');
+    if (c) { completeRequest(c.dataset.complete); return; }
+  });
+  function findReq(id) {
+    for (var i = 0; i < state.requests.length; i++) if (state.requests[i].id === id) return state.requests[i];
+    return null;
+  }
+  function acceptRequest(id) {
+    var r = findReq(id);
+    if (!r || r.status !== 'open') return;
+    r.status = 'accepted'; r.helper = 'me';
+    save(); chime('accept');
+    toast('ひきうけました 💪 けがに 気をつけて！');
+    renderBoard();
+  }
+  function completeRequest(id) {
+    var r = findReq(id);
+    if (!r || r.status !== 'accepted' || r.helper !== 'me') return;
+    r.status = 'done';
+    state.completedByMe++;
+    save(); chime('done');
+    show('complete');
+    renderComplete(r.id);
+  }
+
+  /* =================== COMPLETE / THANKS =================== */
+  function renderComplete(id) {
+    var body = $('#complete-body');
+    var r = findReq(id);
+    var t = r ? (TYPES[r.type] || { label: '?', emoji: '❓' }) : { label: '?', emoji: '❓' };
+    body.innerHTML =
+      '<div class="card" style="text-align:center">' +
+      '<div style="font-size:3em">🎉</div>' +
+      '<p><b>' + (r ? esc(BLOCKS[r.block]) + ' の ' + t.emoji + ' ' + esc(t.label) : '') + '</b> の 雪かきが おわりました！</p>' +
+      '<p class="muted">おかねは かかりません。かわりに「ありがとう」を おくりましょう。</p>' +
+      '<button class="bigbtn warm" data-thanks="' + (r ? r.id : '') + '" style="justify-content:center"><span class="emoji">🍊</span><span>ありがとうを おくる<small>みかんに とどきます</small></span></button>' +
+      '<button class="bigbtn" data-goto="board" style="justify-content:center"><span class="emoji">📋</span><span>依頼ボードに もどる</span></button>' +
+      '</div>';
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-thanks]');
+    if (t) { sendThanks(t.dataset.thanks, t); }
+  });
+  function sendThanks(id, btn) {
+    var r = findReq(id);
+    if (!r || r.thanksSent) return;
+    r.thanksSent = true;
+    state.myGiven++;
+    state.thanksTotal++;
+    state.thanksByBlock[r.block] = (state.thanksByBlock[r.block] || 0) + 1;
+    save(); chime('thanks');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="emoji">🍊</span><span>ありがとうを おくりました<small>たのんだ人にも つたわりました</small></span>';
+    }
+    toast('ありがとうを おくりました 🍊');
+    /* demo: the requester replies with thanks too */
+    setTimeout(function () {
+      if (currentView !== 'complete') return;
+      state.myReceived++;
+      state.thanksTotal++;
+      state.thanksByBlock[r.block] = (state.thanksByBlock[r.block] || 0) + 1;
+      save();
+      chime('thanks');
+      toast('たのんだ人からも ありがとうが とどきました 🍊✨');
+      var body = $('#complete-body');
+      if (body) {
+        var note = document.createElement('p');
+        note.className = 'muted';
+        note.style.textAlign = 'center';
+        note.textContent = '🍊 たのんだ人から「ありがとう」が とどきました（デモ）';
+        body.querySelector('.card').appendChild(note);
+      }
+    }, 1400);
+  }
+
+  /* =================== MYREQ =================== */
+  function renderMyreq() {
+    var list = $('#myreq-list');
+    var mine = state.requests.filter(function (r) { return r.mine; });
+    if (!mine.length) {
+      list.innerHTML = '<div class="card"><p>まだ たのみごとが ありません。</p><button class="bigbtn primary" data-goto="request"><span class="emoji">❄️</span><span>雪かきを たのむ</span></button></div>';
+      return;
+    }
+    list.innerHTML = mine.map(function (r) {
+      var t = TYPES[r.type] || { label: '?', emoji: '❓' };
+      var status = r.status === 'open'
+        ? '<span class="badge open">まだ だれも いません</span>'
+        : r.status === 'accepted'
+          ? '<span class="badge accepted">てつだいの もうしで あり（' + (r.helper === 'me' ? 'じぶん' : 'ご近所さん') + '）</span>'
+          : '<span class="badge done">かんりょう</span>';
+      var del = r.status !== 'done' ? '<button class="backlink" data-del="' + r.id + '" style="color:var(--danger)">とりけす</button>' : '';
+      return '<div class="card reqcard ' + (r.status === 'accepted' ? 'accepted' : '') + '">' +
+        '<div class="row1"><span class="block-name">' + esc(BLOCKS[r.block]) + '</span> ' + status + '</div>' +
+        '<div class="meta">' + t.emoji + ' ' + esc(t.label) + '／しめきり：' + esc(DUES[r.due] || '?') + '／' + esc(agoText(r.createdAt)) + '</div>' +
+        del + '</div>';
+    }).join('');
+  }
+  document.addEventListener('click', function (e) {
+    var d = e.target.closest('[data-del]');
+    if (d) {
+      state.requests = state.requests.filter(function (r) { return r.id !== d.dataset.del; });
+      save(); toast('たのみごとを とりけしました');
+      renderMyreq();
+    }
+  });
+
+  /* =================== COMMUNITY =================== */
+  function renderCommunity() {
+    $('#com-total').textContent = state.thanksTotal;
+    $('#com-done').textContent = state.completedByMe;
+    var max = Math.max.apply(null, state.thanksByBlock.concat([1]));
+    $('#com-bars').innerHTML = BLOCKS.map(function (name, i) {
+      var v = state.thanksByBlock[i] || 0;
+      var w = Math.round((v / max) * 100);
+      return '<div class="bar-row"><span class="lbl">' + name + '</span><span class="track"><span class="fill" style="width:' + w + '%"></span></span><span>' + v + '</span></div>';
+    }).join('');
+    var level = state.thanksTotal >= 24 ? 3 : state.thanksTotal >= 18 ? 2 : state.thanksTotal >= 14 ? 1 : 0;
+    drawMascot(level);
+    var note = level === 0 ? 'みかんは まだ ぼうしを かぶっていません'
+      : level === 1 ? 'みかんが 毛糸のぼうしを かぶりました 🧶'
+      : level === 2 ? 'ぼうしに ポンポンが つきました 🧶✨'
+      : 'みかんに マフラーも つきました 🧣';
+    $('#mascot-note').textContent = note;
+  }
+  function drawMascot(level) {
+    var cv = $('#mascot');
+    if (!cv) return;
+    var ctx = cv.getContext('2d');
+    var W = cv.width, H = cv.height;
+    ctx.clearRect(0, 0, W, H);
+    var cx = W / 2, cy = H / 2 + 18, R = 56;
+
+    /* body (mikan) */
+    var g = ctx.createRadialGradient(cx - 18, cy - 20, 8, cx, cy, R + 6);
+    g.addColorStop(0, '#ffd08a'); g.addColorStop(.55, '#f59e0b'); g.addColorStop(1, '#d97706');
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle = 'rgba(180,100,0,.25)'; ctx.lineWidth = 2; ctx.stroke();
+
+    /* leaf */
+    ctx.beginPath();
+    ctx.ellipse(cx + 10, cy - R - 4, 20, 9, -0.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#4a9d5f'; ctx.fill();
+
+    /* face */
+    ctx.fillStyle = '#4a3323';
+    ctx.beginPath(); ctx.arc(cx - 18, cy - 6, 5.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 18, cy - 6, 5.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, cy + 14, 16, 0.15 * Math.PI, 0.85 * Math.PI); ctx.strokeStyle = '#4a3323'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke();
+    /* blush */
+    ctx.fillStyle = 'rgba(240,120,90,.35)';
+    ctx.beginPath(); ctx.arc(cx - 30, cy + 8, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 30, cy + 8, 7, 0, Math.PI * 2); ctx.fill();
+
+    /* knitted hat */
+    if (level >= 1) {
+      var hatTop = cy - R - 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy - 14, R - 6, Math.PI * 1.08, Math.PI * 1.92);
+      ctx.lineWidth = 24; ctx.strokeStyle = '#c0392b'; ctx.lineCap = 'round'; ctx.stroke();
+      /* ribbed lines */
+      ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.45)';
+      for (var a = 0.12; a < 0.9; a += 0.16) {
+        var ang = Math.PI * (1.08 + a * 0.84 / 0.9);
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(ang) * (R - 17), cy - 14 + Math.sin(ang) * (R - 17));
+        ctx.lineTo(cx + Math.cos(ang) * (R + 5), cy - 14 + Math.sin(ang) * (R + 5));
+        ctx.stroke();
+      }
+      /* brim */
+      ctx.beginPath();
+      ctx.arc(cx, cy - 14, R + 2, Math.PI * 1.12, Math.PI * 1.88);
+      ctx.lineWidth = 9; ctx.strokeStyle = '#a93226'; ctx.stroke();
+      if (level >= 2) {
+        /* pompom */
+        ctx.beginPath(); ctx.arc(cx, cy - R - 16, 13, 0, Math.PI * 2);
+        ctx.fillStyle = '#f8f4ec'; ctx.fill();
+        ctx.strokeStyle = '#e0d8c8'; ctx.lineWidth = 2; ctx.stroke();
+      }
+      if (level >= 3) {
+        /* scarf */
+        ctx.beginPath();
+        ctx.arc(cx, cy + R - 2, R - 10, Math.PI * 0.15, Math.PI * 0.85);
+        ctx.lineWidth = 14; ctx.strokeStyle = '#2b6cb0'; ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx + R - 16, cy + R - 12);
+        ctx.lineTo(cx + R + 2, cy + R + 26);
+        ctx.lineTo(cx + R - 14, cy + R + 30);
+        ctx.closePath();
+        ctx.fillStyle = '#2b6cb0'; ctx.fill();
+      }
+    }
+  }
+
+  /* =================== HOME EXTRA =================== */
+  function renderHome() {
+    var mine = state.requests.filter(function (r) { return r.mine; });
+    var open = mine.filter(function (r) { return r.status !== 'done'; });
+    var el = $('#home-mine');
+    if (open.length) {
+      el.innerHTML = '<h2 style="margin-top:0">わたしの たのみごと</h2>' +
+        '<p class="muted">' + open.length + 'けん が うけつけ中です。</p>' +
+        '<button class="choice" data-goto="myreq">くわしく 見る</button>';
+    } else {
+      el.innerHTML = '<h2 style="margin-top:0">はじめての かたへ</h2>' +
+        '<p class="muted">むずかしい そうさは ありません。アカウントも いりません。まずは「雪かきを たのむ」から どうぞ。</p>';
+    }
+  }
+
+  /* =================== RENDER ROUTER =================== */
+  function render(name) {
+    if (name === 'home') renderHome();
+    else if (name === 'request') { if (draft.step === 1) draft = { block: null, type: null, due: null, step: 1 }; renderRequest(); }
+    else if (name === 'board') renderBoard();
+    else if (name === 'myreq') renderMyreq();
+    else if (name === 'community') renderCommunity();
+  }
+
+  /* reset */
+  $('#btnReset').addEventListener('click', function () {
+    state = defaults();
+    save();
+    toast('データを さいしょに もどしました');
+    show('home');
+  });
+
+  /* =================== Service worker (PWA) =================== */
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    navigator.serviceWorker.register('./sw.js').catch(function () {});
+  }
+
+  /* =================== Boot =================== */
+  if (location.hash && views.indexOf(location.hash.slice(1)) !== -1) {
+    show(location.hash.slice(1));
+  } else {
+    show('home');
+  }
 })();
 </script>
 </body>

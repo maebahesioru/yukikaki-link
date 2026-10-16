@@ -1,0 +1,20 @@
+{
+  "name": "ゆきかきリンク | Yukikaki Link",
+  "short_name": "ゆきかきリンク",
+  "description": "近所の雪かきを助け合う、アカウント不要・オフライン対応のPWA。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f9fc",
+  "theme_color": "#2b6cb0",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
