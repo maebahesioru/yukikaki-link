@@ -1,7 +1,7 @@
 # STATUS — ゆきかきリンク (Yukikaki Link)
 
 **Neighborhood Hacks 2026** / Hacking period: 2026-10-16 〜 10-23（提出締切: Oct 23 11:59 PM CST）
-最終更新: 2026-10-16 (JST)
+最終更新: 2026-10-16 19:00 (JST)
 
 ## Now
 
@@ -10,7 +10,9 @@
 - **QR招待**: 生成済み（本番URLへデコード確認）+ 印刷用招待カード + アプリ内QR表示
 - **証拠キット v1**: docs/evidence-kit.md（札幌/北海道の公開統計・出典URL付き）
 - **デモ動画 完成**: videos/yukikaki-link-demo.mp4（3分48秒 / 1920×1080 / H.264+AAC / 英語ナレーション+英語字幕焼込 / 本番URLの実操作を録画）
-- **プロンプト発表待ち**: 公式 https://neighborhoodhacks.org/challenge/ は "TO BE ANNOUNCED"
+- **デモ動画 YouTube公開済み（限定公開）**: https://youtu.be/cm3qypvrTM8 （十字架チャンネル・3:47表示・再生確認済み。公開へはStudioで1クリック）
+- **動画バックアップ2系統**: Pages直URL（video/mp4 200）＋ GitHub Release `demo-video`（17.7MB添付・302→200確認）
+- **プロンプト発表待ち**: 公式 https://neighborhoodhacks.org/challenge/ は "TO BE ANNOUNCED"（10/16 19:00時点）
 
 ## Done
 
@@ -28,8 +30,8 @@
 - [ ] **プロンプト発表の確認**（公式キックオフ Oct 16 CDT / https://neighborhoodhacks.org/challenge/）
       → 発表されたら適合判定（トラック・要件・ルーブリック変更の有無）
 - [ ] 聞き取りメモの記入（evidence-kit §3 — チーム実施分）
-- [ ] 提出文作成（Devpost: problem/observation/data + AI開示）
-- [ ] Devpost提出（Oct 23 11:59 PM CST まで）
+- [x] 提出文下書き作成（210_hackathons/neighborhood/SUBMISSION_DRAFT.md — name/pitch/description（証拠数字入り）/動画・リポジトリリンク/AI開示、要件5点と照合済み）
+- [ ] Devpost提出（フォーム開放 10/17 02:00 JST 予定 → 締切 Oct 23 11:59 PM CST）
 
 ## Compliance
 
