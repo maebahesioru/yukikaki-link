@@ -5,6 +5,7 @@ package-lock.json
 # test artifacts
 test-results/
 playwright-report/
+tests/screenshots/
 *.png.tmp
 
 # OS
